@@ -5,19 +5,28 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" /> 
         <link rel="icon" href="img/favicon.png">
         <link rel="stylesheet" href="css/styles.css">
+ 
     </head>
     <body>
         <div class="centered-form">
             <div class="centered-form__box">
-                <h1>Join!</h1>
-                <form action="/chat.html">
-                    <label>Display name</label>
-                    <input type="text" name="usrname" placeholder="display name" required>
-                    <lable>Room</lable>
-                    <input tupe="text" name="room" placeholder="room name" required>
-                    <button>Join</button>
+                <h1>SignUp/Login!</h1>
+                <form  id="signup-form">
+                    <label> SignUp</label>
+                    <input type="radio" name="SignUp" value="SignUp">
+                    <label for="Login"> Login</label>   
+                    <input type="radio" name="SignUp" value="Login">
+
+                    <label>Username</label>
+                    <input type="text" name="name" placeholder="your display name" required style="border: 1px solid;">
+                    <label>Password</label>
+                    <input type="password" name="cred" required style="border: 1px solid;">
+                    <button id="signup">Submit</button>
                 </form>
             </div>
         </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+        <script src="scripts/first.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> 
     </body>
 </html>

@@ -4,14 +4,27 @@ const http=require('http')
 const socketio =require('socket.io')
 const {genMsg,genLocMsg}=require('./utils/messages')
 const {adduser,getUser,removeUser,getUsersinRoom}=require('./utils/users')
+require('./db/mongoose')
+const userRouter=require('./routers/userRoutes')
 
+const roomRouter=require('./routers/roomRoutes')
 
 const app= express()
+const publicPathDirectory=path.join(__dirname,'../public')
+app.use(express.static(publicPathDirectory))
+
+
+
+
+app.use(express.json())
+app.use(userRouter)
+app.use(roomRouter)
+
+
 const server= http.createServer(app)
 const io= socketio(server)
 const port= process.env.PORT||3000
-const publicPathDirectory=path.join(__dirname,'../public')
-app.use(express.static(publicPathDirectory))
+
 //let count=0
 //#region practice
 // add a socket event listner for connection event

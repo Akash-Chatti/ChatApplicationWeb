@@ -18,7 +18,7 @@ const locTemplate= document.querySelector('#Loc-Template').innerHTML
 const sidebarTemplate= document.querySelector('#sidebar-Template').innerHTML
 
 //Options
-const {usrname,room}=Qs.parse(location.search,{ignoreQueryPrefix:true})
+const {usrname,room,tkn}=Qs.parse(location.search,{ignoreQueryPrefix:true})
 
 const autoscroll = ()=>{
     //New message element
@@ -57,6 +57,32 @@ const autoscroll = ()=>{
 // })
 //#endregion
 
+const logout=document.querySelector('#logout')
+
+logout.addEventListener('click',()=>{
+var settings={
+'url':'http://localhost:3000/user/logout',
+"method":"POST",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer "+tkn
+          }
+}
+$.ajax(settings).done(
+    (data)=>{
+    console.log(data)
+    location.href='/'
+})
+    .fail((err)=>{
+        console.log(err.responseText)
+        location.href='/'
+    })
+
+})
+
+function change(){
+    location.href="/room.html?tkn="+tkn;
+}
 socket.on('Message',(msg)=>{
     console.log(msg)  
     const html= Mustache.render(msgTemplate,{msg:msg.text,createdAt:moment(msg.createdAt).format('h:mm a'),usrname:msg.usrname})
@@ -107,13 +133,17 @@ msgsArea.insertAdjacentHTML('beforeend',html)
 autoscroll()
 })
 
-socket.emit('join',{usrname,room},(err)=>{
-if(err)
-{
-    window.alert(err)
-    location.href='/'
-}
+$(document).ready(function(){
+        socket.emit('join',{usrname,room},(err)=>{
+            if(err)
+            {
+                window.alert(err)
+            }
+            })
 })
+
+
+
 socket.on('roomData',({room,users})=>{
     console.log(room,users)
  const html=Mustache.render(sidebarTemplate,{room,users})

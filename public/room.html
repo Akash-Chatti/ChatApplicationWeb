@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>ChatApp</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+        <link rel="icon" href="img/favicon.png">
+        <link rel="stylesheet" href="css/styles.css">
+        
+    </head>
+    <body>
+        <button id="logout" style="height: auto; width:190px; padding:5px; margin:8px; border-radius:4px" >Logout</button>    
+
+        <div class="centered-form">
+            <div class="centered-form__box">
+                <h1>Create/Join a room!</h1>
+                <form id="roomform">
+                    <label>Create room</label>
+                    <input type="checkbox" name="create" valueOn="newroom">
+                    <lable>Room</lable>
+                    <input type="text" name="room" placeholder="room name" required>
+                    <lable>Password</lable>
+                    <input type="password" name="Password" required>
+                    <button id="join-room">Join</button>
+                </form>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script> 
+        <script src="scripts/enterroom.js"></script>
+        
+
+    </body>
+</html>

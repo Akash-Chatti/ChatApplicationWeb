@@ -5,11 +5,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=1" /> 
         <link rel="icon" href="img/favicon.png">
         <link rel="stylesheet" href="css/styles.css">
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script> 
     </head>
     <body>
         <div class="chat">
-            <div class="chat__sidebar" id="sidebar"></div>
+            <div class="chat__sidebar" id="sidebar">
+
+            </div>
                 <div class="chat__main" >
+                    <button id="logout" style="height: auto; width:190px; padding:5px; margin:8px; border-radius:4px" >Logout</button>    
+
                      </br></br>
                         <div id="messages" class="chat__messages">
 
@@ -49,6 +54,7 @@
         </script>
         <script id="sidebar-Template" type="text/html">
             <h2 class="room-title">{{room}}</h2>
+            <button id="changeroom" style="height: auto; width:190px; padding:5px; margin:8px; border-radius:4px" onclick="change()">Change Room</button>    
             <h4 class="list-title">Users</h4>
             <ul class="users">
                 {{#users}}
