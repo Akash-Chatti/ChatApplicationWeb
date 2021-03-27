@@ -9,6 +9,7 @@ require('./db/mongoose')
 const userRouter=require('./routers/userRoutes')
 
 const roomRouter=require('./routers/roomRoutes')
+
 const app= express()
 const publicPathDirectory=path.join(__dirname,'../public')
 app.use(express.static(publicPathDirectory))
@@ -16,9 +17,10 @@ app.use(express.json())
 app.use(userRouter)
 app.use(roomRouter)
 const server= http.createServer(app)
-const io= socketio(server)
+const io= socketio(server) 
 const port= process.env.PORT||3000
 var hostPath=process.env.hostPath
+const RoomMode=require('./db/models/room')
 
 //let count=0
 //#region practice
@@ -53,18 +55,9 @@ io.on('connection',(socket)=>{
                  "Content-Type": "application/json",
                   "Authorization": "Bearer "+tkn
                     },
-            "data": JSON.stringify({roomname:user.room,message:msg}),
+            "body": JSON.stringify({roomname:user.room,message:msg}),
         }
-        var options = {
-            'method': 'PATCH',
-            'url': 'localhost:3000/room/message',
-            'headers': {
-              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmYxNjVkZjhlNjM3ZjM3MTA2ODgxYzYiLCJpYXQiOjE2MDk2NTYxODZ9.5Ptb5qPdfZa_FhwS6VF-rg91PgDvQTR2wpZzt6uFCDg',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({"roomname":"RAW","message":"hi"})
-          
-          };
+        
         
           request(settings, function (error, response) {
             if (error) 
@@ -83,14 +76,17 @@ io.on('connection',(socket)=>{
     })
     // io.to(room).emit() , socket.broadcast.to(room).emit() 
     //methods help to keep the conversations within a room
-    socket.on('join',({usrname,room},callback)=>{
+    socket.on('join',async({usrname,room},callback)=>{
         const {error,user}=adduser({id:socket.id,userName:usrname,room})
         if(error)
         {
             return callback(error)
         }
         socket.join(user.room)
-        socket.emit('Message',genMsg({text:`Welcome to the ${user.room}, ${user.userName}`,usrname:'Notification'}))
+        var ChatRoom= await RoomMode.findOne({name:room})
+        
+        socket.emit('getChat',{msgs:ChatRoom.messages})
+        socket.emit('Message',genMsg({text:`You have joined ${user.room}`,usrname:'Notification'}))
         socket.broadcast.to(user.room).emit('Message',genMsg({text:`${user.userName} has joined!`,usrname:'Notification'}))
         io.to(user.room).emit('roomData',{
             room:user.room,

@@ -26,6 +26,7 @@ router.patch('/room/message',auth,async(req,res)=>{
     try 
     {
         let {roomname,message}= req.body
+       
         roomname=roomname.toLowerCase()
         let room= await Room.findOne({name:roomname})
         let user= req.user
@@ -33,14 +34,15 @@ router.patch('/room/message',auth,async(req,res)=>{
             return res.status(404).send('room/user not found')
         }
         let allMsgs=room.messages
-        allMsgs.push({username:user.name,message})
+        
+        allMsgs.push({username:user.name,message,time:new Date()})
         if(allMsgs.length>=21){
             room.messages=allMsgs.slice(1)
         }
-        else{
+         else{
             room.messages=allMsgs
         }
-        console.log(allMsgs)
+       
         await room.save()
         res.send('Updated message')
     } catch (e) {
@@ -48,6 +50,17 @@ router.patch('/room/message',auth,async(req,res)=>{
     }
 })
 
+router.get('/room/getbyname',async(req,res)=>
+{
+    
+    let roomname= req.body.roomname
+    
+        roomname=roomname.toLowerCase()
+        var ch= await Room.findOne({name:roomname})
+        
+       
+       return res.send({room:ch})
+})
 //join a room
 router.post('/room/join',auth,async(req,res)=>{  
 let {roomname,passcode}=req.body

@@ -21,6 +21,9 @@ const RoomSchema = new mongoose.Schema(
             message:{
                 type:String,
                 trim:true
+            },
+            time:{
+                type:Date
             }
         }],
         participents:[{

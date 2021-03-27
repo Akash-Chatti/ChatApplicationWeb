@@ -1,6 +1,5 @@
 // this file has access to io package since index.html
 // loads socket.io scripts before this script
-
 //this call connects client to a Web Socket
 const socket=io()
 
@@ -14,6 +13,7 @@ let sidebar=document.querySelector('#sidebar')
 
 //Template
 const msgTemplate= document.querySelector('#msg-Template').innerHTML
+const chatTemplate= document.querySelector('#chat-Template').innerHTML
 const locTemplate= document.querySelector('#Loc-Template').innerHTML
 const sidebarTemplate= document.querySelector('#sidebar-Template').innerHTML
 
@@ -83,11 +83,28 @@ $.ajax(settings).done(
 function change(){
     location.href="/room.html?tkn="+tkn;
 }
-socket.on('Message',(msg)=>{
-    console.log(msg)  
+socket.on('Message',(msg)=>{ 
+
     const html= Mustache.render(msgTemplate,{msg:msg.text,createdAt:moment(msg.createdAt).format('h:mm a'),usrname:msg.usrname})
     msgsArea.insertAdjacentHTML('beforeend',html)
     autoscroll()
+})
+
+
+socket.on('getChat',(msgs)=>{ 
+    
+
+    for(var i=0;i<msgs.msgs.length;i++) {
+
+        var e= msgs.msgs[i]
+        console.log(e)
+        var a= e.time.split('T')
+        var b=a[1].substring(0,5)
+            const html= Mustache.render(chatTemplate,{msg:e.message,usrname:e.username,createdAt:b})
+            
+            msgsArea.insertAdjacentHTML('beforeend',html)
+         };
+         
 })
 
 msgForm.addEventListener('submit',(e)=>{
@@ -109,7 +126,7 @@ socket.emit('SendMessage',data,()=>{
     sendLoc.removeAttribute('disabled')
     inputMsg.value=''
     inputMsg.focus()
-    console.log('Delivered')})
+    })
 })
 
 sendLoc.addEventListener('click',()=>{
@@ -145,8 +162,8 @@ $(document).ready(function(){
 
 
 
+
 socket.on('roomData',({room,users})=>{
-    console.log(room,users)
  const html=Mustache.render(sidebarTemplate,{room,users})
  document.querySelector('#sidebar').innerHTML=html
 })
