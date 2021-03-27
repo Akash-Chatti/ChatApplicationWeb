@@ -14,7 +14,8 @@ router.post('/user',async(req,res)=>{
     }
     // console.log(usr,req)
     usr.name=usr.name.toLowerCase()
-    const tkn= await user.genAuthToken()
+    const tkn= await usr.genAuthToken()
+  
     await usr.save()
     res.send(usr)
     }
@@ -34,8 +35,7 @@ router.post('/user/login',async (req,res)=>{
         res.status(400).send('user not found')
     }
 })
-// call when the browser closes not when connection closes
-// or give a logout button in room.html and chat.html
+
 router.post('/user/logout',auth,async(req,res)=>{
     try{
      req.user.tokens=req.user.tokens.filter((tkn)=>{

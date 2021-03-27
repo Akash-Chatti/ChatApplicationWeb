@@ -1,5 +1,6 @@
 const express=require('express')
 const path= require('path')
+const request= require('request')
 const http=require('http')
 const socketio =require('socket.io')
 const {genMsg,genLocMsg}=require('./utils/messages')
@@ -8,22 +9,16 @@ require('./db/mongoose')
 const userRouter=require('./routers/userRoutes')
 
 const roomRouter=require('./routers/roomRoutes')
-
 const app= express()
 const publicPathDirectory=path.join(__dirname,'../public')
 app.use(express.static(publicPathDirectory))
-
-
-
-
 app.use(express.json())
 app.use(userRouter)
 app.use(roomRouter)
-
-
 const server= http.createServer(app)
 const io= socketio(server)
 const port= process.env.PORT||3000
+var hostPath=process.env.hostPath
 
 //let count=0
 //#region practice
@@ -47,8 +42,42 @@ const port= process.env.PORT||3000
 
 io.on('connection',(socket)=>{
     
-    socket.on('SendMessage',(msg,Ack)=>{
+    socket.on('SendMessage',({msg,tkn},Ack)=>{
+       // var {msg,tkn}=data
         const user= getUser(socket.id)
+       
+        var settings={
+            'url':hostPath+'/room/message',
+            "method": "PATCH",
+            "headers": {
+                 "Content-Type": "application/json",
+                  "Authorization": "Bearer "+tkn
+                    },
+            "data": JSON.stringify({roomname:user.room,message:msg}),
+        }
+        var options = {
+            'method': 'PATCH',
+            'url': 'localhost:3000/room/message',
+            'headers': {
+              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZmYxNjVkZjhlNjM3ZjM3MTA2ODgxYzYiLCJpYXQiOjE2MDk2NTYxODZ9.5Ptb5qPdfZa_FhwS6VF-rg91PgDvQTR2wpZzt6uFCDg',
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({"roomname":"RAW","message":"hi"})
+          
+          };
+        
+          request(settings, function (error, response) {
+            if (error) 
+            console.log(error);
+            console.log(response.body);
+
+          });
+        // $.ajax(settings).done((data)=>{
+        // console.log(data)
+        // })
+        // .fail((err)=>{
+        // console.log(err)
+        // })
         io.to(user.room).emit('Message',genMsg({text:msg,usrname:user.userName}))
         Ack()
     })

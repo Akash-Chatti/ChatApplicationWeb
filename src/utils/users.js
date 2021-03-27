@@ -34,7 +34,10 @@ const removeUser=(id)=>{
 }
 
 const getUser=(id)=>{
-    return users.find((u)=>u.id===id)
+    let usr= users.find((u)=>u.id===id)
+    console.log(usr)
+    return usr
+   
 }
 
 const getUsersinRoom=(room)=>{

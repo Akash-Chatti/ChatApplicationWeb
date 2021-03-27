@@ -102,7 +102,8 @@ if(!msg)
  return window.alert('Cannot send blank message')
 
 }
-socket.emit('SendMessage',msg,()=>{
+var data={msg,tkn}
+socket.emit('SendMessage',data,()=>{
     //enable buttons
     SendMsgBtn.removeAttribute('disabled')
     sendLoc.removeAttribute('disabled')

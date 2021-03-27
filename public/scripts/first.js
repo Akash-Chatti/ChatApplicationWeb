@@ -17,7 +17,7 @@ var reData={
     "name":usr,
     "password":pas
 }
-console.log(reData)
+
 if(SignUp==='SignUp')
  {
     var settings = {
@@ -37,8 +37,8 @@ if(SignUp==='SignUp')
         window.location.href = "/";
         }
         else{
-            window.alert(response)
-            window.location.href="/room.html?tkn="+data.tkn;
+            
+            window.location.href="/room.html?tkn="+response.tokens[0].token;
         }
         console.log(response);
       }).fail((err)=>{
@@ -64,7 +64,7 @@ if(SignUp==='SignUp')
         console.log(data)
         if(data.tkn)
         {
-                   window.alert('Logged in succesfully')
+                  // window.alert('Logged in succesfully')
                    //console.log(data)
                    window.location.href = "/room.html?tkn="+data.tkn;
         }

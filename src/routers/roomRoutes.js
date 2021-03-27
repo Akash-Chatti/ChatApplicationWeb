@@ -40,6 +40,7 @@ router.patch('/room/message',auth,async(req,res)=>{
         else{
             room.messages=allMsgs
         }
+        console.log(allMsgs)
         await room.save()
         res.send('Updated message')
     } catch (e) {
